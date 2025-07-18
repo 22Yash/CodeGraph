@@ -1,0 +1,39 @@
+
+    @keyframes float {
+      0%, 100% { transform: translateY(0px); }
+      50% { transform: translateY(-20px); }
+    }
+    @keyframes glow {
+      from { box-shadow: 0 0 20px rgba(34, 197, 94, 0.3); }
+      to { box-shadow: 0 0 30px rgba(34, 197, 94, 0.6); }
+    }
+    @keyframes typing {
+      0%, 50% { width: 0; }
+      100% { width: 100%; }
+    }
+    @keyframes gradient {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+    .animate-float {
+      animation: float 6s ease-in-out infinite;
+    }
+    .animate-glow {
+      animation: glow 2s ease-in-out infinite alternate;
+    }
+    .typing-effect {
+      overflow: hidden;
+      white-space: nowrap;
+      border-right: 2px solid #22c55e;
+      animation: typing 4s steps(40) infinite;
+    }
+    .gradient-text {
+      background: linear-gradient(135deg, #22c55e, #3b82f6, #8b5cf6);
+      background-size: 200% 200%;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: gradient 3s ease infinite;
+    }
+  

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Github, ArrowRight, Code, GitBranch, Users, Zap, Eye, MessageCircle, BarChart3, 
          Check, Menu, X, Star, Play, Sun, Moon } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import GitHubLoginButton from "../pages/Github Button/GithubLoginButton";
 
 const LandingPage = () => {
   const [isDark, setIsDark] = useState(true);
@@ -244,8 +245,7 @@ const LandingPage = () => {
               </button>
               
               <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center space-x-2">
-                <Github className="w-4 h-4" />
-                <span onClick={()=>navigate('/login')}>Connect GitHub</span>
+              <GitHubLoginButton text="Connect GitHub" />
               </button>
             </div>
 

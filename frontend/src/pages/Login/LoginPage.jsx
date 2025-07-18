@@ -1,9 +1,7 @@
-// src/pages/LoginPage.jsx
-
 import React, { useState } from "react";
 import Navbar from "../../components/Navbar";
-// import GitHubLoginButton from "../Github Button/GitHubLoginButton";
-// import "./LoginPage.css";
+import GitHubLoginButton from "../Github Button/GithubLoginButton";
+import "./LoginPage.css";
 
 const LoginPage = () => {
   const [accepted, setAccepted] = useState(false);
@@ -31,7 +29,7 @@ const LoginPage = () => {
 
             {/* GitHub Login Button */}
             <div className="mb-6">
-              {/* <GitHubLoginButton text="Sign in with GitHub" disabled={!accepted} /> */}
+              <GitHubLoginButton text="Sign in with GitHub" disabled={!accepted} />
             </div>
 
             {/* Terms Checkbox */}
