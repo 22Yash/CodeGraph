@@ -2,8 +2,8 @@ const express = require("express");
 const fs = require("fs-extra");
 const router = express.Router();
 const { generateDependencyGraphFromRepo } = require("../controllers/dependencyGraphService");
-const { convertGraphToTree } = require("../utils/convertGraphToTree");
 
+// POST endpoint to generate and return the dependency graph for a given repository
 router.post("/", async (req, res) => {
   const { repoFullName, githubToken } = req.body;
 
@@ -12,16 +12,19 @@ router.post("/", async (req, res) => {
   }
 
   try {
-    const { graph, tempFolderPath } = await generateDependencyGraphFromRepo(repoFullName, githubToken);
+    // Call the service to download the repo, generate the graph, and get the temp folder path
+    // This function now returns the treeGraph directly.
+    const { graphObj, treeGraph, tempFolderPath } = await generateDependencyGraphFromRepo(repoFullName, githubToken);
 
-    const treeGraph = convertGraphToTree(graph);
+    // Send the treeGraph back to the client.
+    res.json({ graph: graphObj, treeGraph: treeGraph });
 
-    res.json({ graph, treeGraph });
-
+    // Step 6: Clean up: remove the temporary repository folder after sending the response
+    // This is important for disk space management
     await fs.remove(tempFolderPath);
   } catch (error) {
-    console.error("Dependency graph error:", error.message);
-    res.status(500).json({ error: "Failed to generate dependency graph" });
+    console.error("Dependency graph generation error:", error.message);
+    res.status(500).json({ error: "Failed to generate dependency graph", details: error.message });
   }
 });
 
