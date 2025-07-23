@@ -16,11 +16,7 @@ connectDB();
 const app = express();
 
 // ✅ Fix CORS
-const allowedOrigins = [
-  "https://code-graph-phi.vercel.app",
-  "http://localhost:3000",
-"https://code-graph-phi.vercel.app/",
-];
+app.use(cors({ origin: process.env.FRONTEND_URL, credentials: true }));
 
 app.use(cors({
   origin: function (origin, callback) {
