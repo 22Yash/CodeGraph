@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
 import {
-  GitBranch, // Used for floating element 1
-  Zap,       // Used for floating element 2
-  Activity,  // Used for floating element 3
+  Activity,
   Folder,
   Camera,
   Users,
@@ -16,22 +14,19 @@ import {
   Eye,
 } from "lucide-react";
 
-import "../pages/Dashoard.css"; // Now contains most styling
+import "../pages/Dashoard.css";
 import GitHubRepoDropdown from "../components/GithubRepoDropdown";
 import DashboardNavbar from "../components/DashboardNavbar"; // Import the DashboardNavbar component
 import { useNavigate } from "react-router-dom";
 
 // Dashboard now receives 'theme' and 'toggleTheme' from App.jsx
-function Dashboard({ theme, toggleTheme }) {
+function Dashboard({ theme, toggleTheme }) { // Make sure these props are destructured here
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("repositories");
   const [selectedRepo, setSelectedRepo] = useState(null);
   const [localUserId, setLocalUserId] = useState(null);
   const [recentActivities, setRecentActivities] = useState([]);
   const [activitiesLoading, setActivitiesLoading] = useState(false);
-
-  // No need for theme state or useEffect here, as it's managed by App.jsx
-  // and passed down as props.
 
   // --- Generate and Persist a Local User ID ---
   useEffect(() => {
@@ -107,22 +102,10 @@ function Dashboard({ theme, toggleTheme }) {
 
   return (
     <div className="dashboard-container">
-      {/* Floating elements for visual flair */}
-      <div className="floating-element floating-element-1">
-        <GitBranch size={24} /> {/* Using LucideReact component */}
-      </div>
-      <div className="floating-element floating-element-2">
-        <Zap size={32} /> {/* Using LucideReact component */}
-      </div>
-      <div className="floating-element floating-element-3">
-        <Activity size={20} /> {/* Using LucideReact component */}
-      </div>
-
-      {/* Use the DashboardNavbar component, passing theme and toggleTheme */}
+      {/* Pass theme and toggleTheme to DashboardNavbar */}
       <DashboardNavbar theme={theme} toggleTheme={toggleTheme} />
 
-      {/* Adjusted top margin to account for the fixed header height */}
-      <div className="main-layout mt-[60px]">
+      <div className="main-layout">
         <aside className="sidebar">
           <nav>
             {navItems.map(({ id, label, icon: Icon }) => (
@@ -167,9 +150,9 @@ function Dashboard({ theme, toggleTheme }) {
                   <GitHubRepoDropdown
                     token={localStorage.getItem("token")}
                     onSelect={handleSelect}
-                    dropdownWidth="w-[250px]" // Tailwind class, keep if needed
-                    buttonClassName="primary-btn" // Use generic primary-btn
-                    dropdownClassName="dropdown-menu" // Custom class for dropdown
+                    dropdownWidth="w-[250px]"
+                    buttonClassName="primary-btn"
+                    dropdownClassName="dropdown-menu"
                   />
                 </div>
               </div>
@@ -190,7 +173,7 @@ function Dashboard({ theme, toggleTheme }) {
                 <div className="empty-state">
                   <Folder size={64} className="empty-state-icon" />
                   <p className="empty-state-title">
-                    Start by browsing your GitHub repositories.
+                    Start by Browse your GitHub repositories.
                   </p>
                   <p className="empty-state-description">
                     Select a repository from the "Browse Repositories" dropdown above to view its dependency graph.

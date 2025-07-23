@@ -58,7 +58,7 @@ const Navbar = ({ isDark, toggleTheme, isMenuOpen, toggleMenu }) => {
               </div>
             </button>
             
-            <button className="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center space-x-2">
+            <button className=" px-4 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg flex items-center space-x-2">
               <GitHubLoginButton text="Connect GitHub" />
             </button>
           </div>

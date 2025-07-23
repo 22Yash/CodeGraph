@@ -8,8 +8,13 @@ const GitHubLoginButton = ({ text = "Continue with GitHub", disabled = false }) 
     }
   };
 
-  return (
-    <button className="github-btn" onClick={handleLogin} disabled={disabled}>
+  return ( 
+    <button 
+  className="github-btn" 
+  onClick={handleLogin} 
+  disabled={disabled}
+  style={{ backgroundColor: "#155fdc", color: "white" }} // dark GitHub-like theme
+>
       <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" />
       {text}
     </button>

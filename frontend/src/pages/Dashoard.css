@@ -25,6 +25,26 @@
     --empty-state-icon: #64748b; /* Empty state icon color */
     --empty-state-title: #475569; /* Empty state title color */
     --empty-state-description: #64748b; /* Empty state description color */
+    --blue-600: #2563eb; /* A specific blue shade often used */
+    --purple-600: #9333ea; /* A specific purple shade often used */
+    --hover-bg-light: #f1f5f9; /* Light mode specific hover background */
+    --hover-bg-dark: #cbd5e1; /* Light mode specific darker hover background */
+
+    /* NEW: GraphView specific variables (or reused existing ones) */
+    --graph-primary-bg: var(--primary-bg); /* Main background for GraphView */
+    --graph-card-bg: var(--secondary-bg); /* Card-like elements background */
+    --graph-text-primary: var(--text-color-primary); /* Main text color */
+    --graph-text-secondary: var(--text-color-secondary); /* Secondary text color */
+    --graph-border-color: var(--border-color); /* General border color */
+    --graph-input-border: rgba(203, 213, 225, 0.6); /* Input border for graph view */
+    --graph-input-focus-border: #3b82f6; /* Input focus border */
+    --graph-input-focus-ring: rgba(59, 130, 246, 0.2); /* Input focus ring */
+    --graph-button-bg: #2563eb; /* Blue 600 */
+    --graph-button-hover-bg: #1d4ed8; /* Blue 700 */
+    --graph-button-disabled-bg: #93c5fd; /* Blue 400 */
+    --graph-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --graph-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+
 
     /* Colors for Lucide Icons that change with theme */
     --icon-color-default: #64748b; /* gray-500 */
@@ -62,6 +82,26 @@ html.dark {
     --empty-state-icon: #4a5568; /* Empty state icon color */
     --empty-state-title: #e2e8f0; /* Empty state title color */
     --empty-state-description: #a0aec0; /* Empty state description color */
+    --blue-600: #3b82f6; /* A specific blue shade often used */
+    --purple-600: #8b5cf6; /* A specific purple shade often used */
+    --hover-bg-light: #2d3748; /* Dark mode specific hover background */
+    --hover-bg-dark: #4a5568; /* Dark mode specific darker hover background */
+
+    /* NEW: GraphView specific variables for dark mode */
+    --graph-primary-bg: var(--primary-bg);
+    --graph-card-bg: var(--secondary-bg);
+    --graph-text-primary: var(--text-color-primary);
+    --graph-text-secondary: var(--text-color-secondary);
+    --graph-border-color: var(--border-color);
+    --graph-input-border: #4a5568;
+    --graph-input-focus-border: #63b3ed;
+    --graph-input-focus-ring: rgba(99, 179, 237, 0.2);
+    --graph-button-bg: #3b82f6; /* Blue 600 */
+    --graph-button-hover-bg: #2b6cb0; /* Blue 700 */
+    --graph-button-disabled-bg: #63b3ed; /* Blue 400 */
+    --graph-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    --graph-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.3), 0 4px 6px -2px rgba(0, 0, 0, 0.15);
+
 
     /* Colors for Lucide Icons that change with theme */
     --icon-color-default: #a0aec0; /* gray-400 */
@@ -80,17 +120,20 @@ body {
     font-family: 'Inter', sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out;
 }
 
 .dashboard-container {
     min-height: 100vh;
     background-color: var(--primary-bg);
     color: var(--text-color-primary);
-    transition: background-color 0.3s ease, color 0.3s ease;
+    transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out;
     animation: fadeIn 0.8s ease-out;
+    display: flex;
+    flex-direction: column;
 }
 
-/* Animations (kept as is, as they are keyframe-based) */
+/* Animations */
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(20px); }
     to { opacity: 1; transform: translateY(0); }
@@ -116,25 +159,23 @@ body {
     100% { transform: translate(-50%, -50%) scale(1.8); opacity: 0; }
 }
 
-@keyframes float {
-    0%, 100% { transform: translateY(0px) rotate(0deg); }
-    50% { transform: translateY(-20px) rotate(180deg); }
-}
-
 /* Header Styles */
 .header {
     background: var(--card-bg);
     backdrop-filter: blur(20px);
     border-bottom: 1px solid var(--border-color);
     padding: 1rem 2rem;
-    position: sticky;
+    position: fixed;
     top: 0;
+    width: 100%;
+    box-sizing: border-box;
     z-index: 50;
     animation: slideDown 0.6s ease-out;
-    color: var(--text-color-primary); /* Set default text color for header children */
+    color: var(--text-color-primary);
     display: flex;
     align-items: center;
     justify-content: space-between;
+    transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out, color 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
 }
 
 .header-content {
@@ -143,54 +184,56 @@ body {
     justify-content: space-between;
     max-width: 1400px;
     margin: 0 auto;
-    width: 100%; /* Ensure it spans full width of its parent */
+    width: 100%;
 }
 
 .logo-section {
     display: flex;
     align-items: center;
-    gap: 1.5rem; /* Matches Tailwind space-x-6 */
+    gap: 1.5rem;
 }
 
 .logo {
     display: flex;
     align-items: center;
-    gap: 0.5rem; /* Matches Tailwind space-x-2 */
+    gap: 0.5rem;
     color: var(--logo-color);
-    font-size: 1.5rem; /* Matches Tailwind text-xl */
-    font-weight: 700; /* Matches Tailwind font-bold */
+    font-size: 1.5rem;
+    font-weight: 700;
+    transition: color 0.4s ease-in-out;
 }
 
 .logo svg {
-    width: 1.75rem; /* Matches Lucide size={28} */
+    width: 1.75rem;
     height: 1.75rem;
 }
 
 .search-container {
     position: relative;
-    display: flex; /* Ensures icon alignment */
+    display: flex;
     align-items: center;
 }
 
 .search-input {
     background: var(--input-bg);
     border: 1px solid var(--input-border);
-    border-radius: 0.75rem; /* Matches Tailwind rounded-lg */
-    padding: 0.75rem 1rem 0.75rem 2.5rem; /* Matches Tailwind pl-10 pr-4 py-2 */
-    color: var(--text-color-primary); /* Use primary text color */
-    width: 20rem; /* Matches Tailwind w-80 */
-    transition: all 0.3s ease;
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem 0.75rem 2.5rem;
+    color: var(--text-color-primary);
+    width: 20rem;
+    transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out, color 0.4s ease-in-out, box-shadow 0.3s ease;
 }
 
 .search-input::placeholder {
     color: var(--input-placeholder);
+    transition: color 0.4s ease-in-out;
 }
 
 .search-input:focus {
     outline: none;
-    border-color: var(--blue-600); /* Focus ring color */
+    border-color: var(--blue-600);
     box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-    background: var(--secondary-bg); /* Change background on focus */
+    background: var(--secondary-bg);
 }
 
 .search-icon {
@@ -198,50 +241,46 @@ body {
     left: 1rem;
     top: 50%;
     transform: translateY(-50%);
-    color: var(--text-color-secondary); /* Use secondary text color for icon */
-    width: 1.25rem; /* Matches Lucide size={20} */
+    color: var(--text-color-secondary);
+    width: 1.25rem;
     height: 1.25rem;
+    transition: color 0.4s ease-in-out;
 }
 
 .header-actions {
     display: flex;
     align-items: center;
-    gap: 0.75rem; /* Matches Tailwind space-x-4 */
+    gap: 0.75rem;
 }
 
 .action-btn {
-    background: var(--secondary-bg); /* Explicitly use secondary-bg */
-    border: 1px solid var(--border-color); /* Explicitly use border-color */
-    border-radius: 0.625rem; /* Matches Tailwind rounded-lg */
-    padding: 0.75rem; /* Matches Tailwind p-2 */
-    color: var(--text-color-primary); /* Explicitly use primary text color for button content */
+    background: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    border-radius: 0.625rem;
+    padding: 0.75rem;
+    color: var(--text-color-primary);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out, color 0.4s ease-in-out, transform 0.3s ease, box-shadow 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .action-btn:hover {
-    background: var(--button-hover-bg); /* Use theme-aware hover background */
+    background: var(--button-hover-bg);
     transform: translateY(-1px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .action-btn svg {
-    color: var(--text-color-primary); /* Default icon color to primary text color */
+    color: var(--text-color-primary);
+    transition: color 0.4s ease-in-out;
 }
 
-/* Specific icon colors (Sun/Moon are special cases due to their distinct colors) */
-/* The Sun and Moon icons have their own specific colors that are not tied to the general text color,
-   so their classes in JSX (text-yellow-500, text-blue-400) are appropriate.
-   The .action-btn svg rule above will handle Bell/Settings. */
-
-
 .user-avatar {
-    width: 2.5rem; /* Matches Tailwind w-9 */
-    height: 2.5rem; /* Matches Tailwind h-9 */
-    border-radius: 50%; /* Matches Tailwind rounded-full */
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
     background: linear-gradient(135deg, var(--blue-600), var(--purple-600));
     display: flex;
     align-items: center;
@@ -260,25 +299,28 @@ body {
 .main-layout {
     display: flex;
     max-width: 1400px;
-    margin:60px 100px; 
+    margin: 60px auto;
     gap: 2rem;
     padding: 2rem;
     flex: 1;
+    width: calc(100% - 4rem);
+    box-sizing: border-box;
 }
 
 /* Sidebar */
 .sidebar {
-    width: 16rem; /* Matches Tailwind w-64 */
+    width: 16rem;
     background: var(--card-bg);
     backdrop-filter: blur(20px);
     border: 1px solid var(--border-color);
-    border-radius: 1.25rem; /* Matches Tailwind rounded-2xl */
+    border-radius: 1.25rem;
     padding: 1.5rem;
     height: fit-content;
     position: sticky;
-    top: 6rem; /* Adjusted sticky top */
+    top: calc(60px + 2rem);
     animation: slideInLeft 0.8s ease-out;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out, color 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
 }
 
 .sidebar nav {
@@ -288,18 +330,18 @@ body {
 .nav-item {
     display: flex;
     align-items: center;
-    gap: 0.75rem; /* Matches Tailwind space-x-3 */
+    gap: 0.75rem;
     padding: 0.875rem 1rem;
-    border-radius: 0.75rem; /* Matches Tailwind rounded-xl */
+    border-radius: 0.75rem;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, transform 0.3s ease;
     margin-bottom: 0.5rem;
     color: var(--text-color-secondary);
     font-weight: 500;
 }
 
 .nav-item:hover {
-    background: rgba(59, 130, 246, 0.1); /* light blue hover */
+    background: rgba(59, 130, 246, 0.1);
     color: var(--blue-600);
     transform: translateX(4px);
 }
@@ -308,6 +350,7 @@ body {
     background: linear-gradient(135deg, var(--active-nav-bg-start), var(--active-nav-bg-end));
     color: white;
     box-shadow: 0 4px 12px rgba(59, 130, 246, 0.2);
+    transition: box-shadow 0.4s ease-in-out, color 0.4s ease-in-out;
 }
 
 .quick-actions {
@@ -315,6 +358,7 @@ body {
     padding-top: 2rem;
     border-top: 1px solid var(--quick-actions-border);
     background-color: var(--quick-actions-bg);
+    transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out;
 }
 
 .quick-actions h3 {
@@ -324,6 +368,7 @@ body {
     margin-bottom: 1rem;
     text-transform: uppercase;
     letter-spacing: 0.05em;
+    transition: color 0.4s ease-in-out;
 }
 
 .quick-btn {
@@ -335,7 +380,7 @@ body {
     background: linear-gradient(135deg, var(--blue-600), var(--purple-600));
     color: white;
     border: none;
-    border-radius: 0.75rem; /* rounded-xl */
+    border-radius: 0.75rem;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
@@ -352,6 +397,7 @@ body {
     background: var(--hover-bg-light);
     border: 1px solid var(--quick-btn-secondary-border);
     color: var(--quick-btn-secondary-text);
+    transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out, color 0.4s ease-in-out, transform 0.3s ease;
 }
 
 .quick-btn.secondary:hover {
@@ -374,7 +420,6 @@ body {
 .content-title {
     font-size: 2rem;
     font-weight: 700;
-    /* This uses the custom CSS gradient */
     background: linear-gradient(135deg, var(--blue-600), var(--purple-600));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
@@ -393,10 +438,10 @@ body {
     padding: 0.75rem 1.5rem;
     background: var(--hover-bg-light);
     border: 1px solid var(--border-color);
-    border-radius: 0.75rem; /* rounded-xl */
+    border-radius: 0.75rem;
     color: var(--text-color-primary);
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out, color 0.4s ease-in-out, transform 0.3s ease;
 }
 
 .filter-btn:hover {
@@ -412,7 +457,7 @@ body {
     background: linear-gradient(135deg, var(--blue-600), var(--purple-600));
     color: white;
     border: none;
-    border-radius: 0.75rem; /* rounded-xl */
+    border-radius: 0.75rem;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
@@ -428,12 +473,13 @@ body {
     padding: 1rem;
     background-color: var(--selected-repo-bg);
     color: var(--selected-repo-text);
-    border-radius: 0.5rem; /* rounded-lg */
+    border-radius: 0.5rem;
     display: flex;
     align-items: center;
     justify-content: space-between;
     margin-bottom: 1rem;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
 }
 
 .selected-repo-name {
@@ -447,16 +493,18 @@ body {
     justify-content: center;
     min-height: 25rem;
     background-color: var(--secondary-bg);
-    border-radius: 0.5rem; /* rounded-lg */
+    border-radius: 0.5rem;
     box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     flex-direction: column;
     padding: 1.5rem;
     text-align: center;
+    transition: background-color 0.4s ease-in-out, color 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
 }
 
 .empty-state-icon {
     color: var(--empty-state-icon);
     margin-bottom: 1rem;
+    transition: color 0.4s ease-in-out;
 }
 
 .empty-state-title {
@@ -464,85 +512,139 @@ body {
     font-size: 1.25rem;
     font-weight: 500;
     margin-bottom: 0.5rem;
+    transition: color 0.4s ease-in-out;
 }
 
 .empty-state-description {
     color: var(--empty-state-description);
     font-size: 1rem;
+    transition: color 0.4s ease-in-out;
 }
 
-/* Activity List */
+/* Activity List Improvements */
 .activity-list-container {
     padding: 1rem;
+    max-height: calc(100vh - 250px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: 0.75rem;
+    background-color: var(--secondary-bg);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    transition: background-color 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
 }
+
+/* Custom scrollbar styles (optional, for better aesthetics) */
+.activity-list-container::-webkit-scrollbar {
+    width: 8px;
+}
+
+.activity-list-container::-webkit-scrollbar-track {
+    background: var(--primary-bg);
+    border-radius: 10px;
+    transition: background-color 0.4s ease-in-out;
+}
+
+.activity-list-container::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 10px;
+    transition: background-color 0.4s ease-in-out;
+}
+
+.activity-list-container::-webkit-scrollbar-thumb:hover {
+    background: var(--text-color-secondary);
+}
+
 
 .activity-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 1rem;
+    gap: 1.5rem;
+    padding-right: 10px;
 }
 
 .activity-card {
-    padding: 1rem;
-    border-radius: 0.5rem;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
-    border: 1px solid var(--border-color);
-    background-color: var(--secondary-bg);
+    padding: 1.25rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+    border: 1px solid var(--activity-card-border);
+    background-color: var(--card-bg);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out, color 0.4s ease-in-out, transform 0.2s ease, box-shadow 0.2s ease;
 }
+
+.activity-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
 
 .activity-card-header {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 0.5rem;
-}
-
-.activity-repo-name {
-    font-weight: 600;
-    font-size: 1.125rem;
-    color: var(--activity-repo-name-color);
-}
-
-.activity-timestamp {
-    font-size: 0.875rem;
-    color: var(--text-color-secondary);
-    display: flex;
-    align-items: center;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 0.75rem;
     gap: 0.25rem;
 }
 
+.activity-repo-name {
+    font-weight: 700;
+    font-size: 1.2rem;
+    color: var(--activity-repo-name-color);
+    word-break: break-all;
+    transition: color 0.4s ease-in-out;
+}
+
+.activity-timestamp {
+    font-size: 0.8rem;
+    color: var(--text-color-secondary);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: color 0.4s ease-in-out;
+}
+
 .activity-timestamp .icon {
-    width: 0.875rem;
-    height: 0.875rem;
+    width: 0.8rem;
+    height: 0.8rem;
+    transition: color 0.4s ease-in-out;
 }
 
 .activity-description {
     color: var(--text-color-primary);
-    font-size: 0.875rem;
+    font-size: 0.9rem;
+    line-height: 1.5;
+    margin-bottom: 1rem;
+    flex-grow: 1;
+    transition: color 0.4s ease-in-out;
 }
 
 .activity-actions {
-    margin-top: 0.75rem;
+    margin-top: auto;
     display: flex;
     justify-content: flex-end;
 }
 
 .activity-view-btn {
-    background-color: var(--blue-600);
+    background: linear-gradient(135deg, var(--blue-600), var(--purple-600));
     color: white;
-    padding: 0.25rem 0.75rem;
-    border-radius: 0.375rem;
-    font-size: 0.875rem;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    font-size: 0.9rem;
     display: flex;
     align-items: center;
-    gap: 0.25rem;
+    gap: 0.5rem;
     transition: all 0.2s ease;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     cursor: pointer;
+    border: none;
 }
 
 .activity-view-btn:hover {
-    background-color: var(--blue-700);
+    opacity: 0.9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .activity-view-btn .icon {
@@ -550,33 +652,23 @@ body {
     height: 1rem;
 }
 
-/* Floating Elements */
+.loading-message {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-color-secondary);
+    font-style: italic;
+    transition: color 0.4s ease-in-out;
+}
+
+
+/* Removed Floating Elements styling */
 .floating-element {
-    position: fixed;
+    display: none;
+    visibility: hidden;
+    opacity: 0;
     pointer-events: none;
-    opacity: 0.1;
-    animation: float 6s ease-in-out infinite;
 }
 
-.floating-element-1 {
-    top: 2.5rem;
-    left: 2.5rem;
-    color: var(--icon-color-floating-blue); /* Use CSS variable */
-}
-
-.floating-element-2 {
-    top: 50%;
-    right: 2.5rem;
-    animation-delay: 0.2s;
-    color: var(--icon-color-floating-purple); /* Use CSS variable */
-}
-
-.floating-element-3 {
-    bottom: 2.5rem;
-    left: 25%;
-    animation-delay: 0.4s;
-    color: var(--icon-color-floating-green); /* Use CSS variable */
-}
 
 /* Responsive Design */
 @media (max-width: 1024px) {
@@ -596,6 +688,11 @@ body {
 
     .activity-grid {
         grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    }
+
+    .activity-list-container {
+        max-height: none;
+        overflow-y: visible;
     }
 }
 
@@ -620,8 +717,9 @@ body {
         width: 100%;
         justify-content: flex-start;
     }
-    .floating-element {
-        display: none; /* Hide floating elements on small screens */
+    .main-layout {
+        margin: 60px auto 0;
+        padding: 1rem;
     }
 }
 
@@ -635,7 +733,7 @@ body {
         gap: 0.5rem;
     }
     .search-input {
-        width: calc(100% - 2.5rem); /* Adjust for icon */
+        width: calc(100% - 2.5rem);
     }
     .search-icon {
         left: 0.5rem;
@@ -691,4 +789,4 @@ body {
     .activity-grid {
         grid-template-columns: 1fr;
     }
-}
+}   
