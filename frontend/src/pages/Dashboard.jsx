@@ -16,11 +16,10 @@ import {
 
 import "../pages/Dashoard.css";
 import GitHubRepoDropdown from "../components/GithubRepoDropdown";
-import DashboardNavbar from "../components/DashboardNavbar"; // Import the DashboardNavbar component
+import DashboardNavbar from "../components/DashboardNavbar";
 import { useNavigate } from "react-router-dom";
 
-// Dashboard now receives 'theme' and 'toggleTheme' from App.jsx
-function Dashboard({ theme, toggleTheme }) { // Make sure these props are destructured here
+function Dashboard({ theme, toggleTheme }) {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("repositories");
   const [selectedRepo, setSelectedRepo] = useState(null);
@@ -28,7 +27,6 @@ function Dashboard({ theme, toggleTheme }) { // Make sure these props are destru
   const [recentActivities, setRecentActivities] = useState([]);
   const [activitiesLoading, setActivitiesLoading] = useState(false);
 
-  // --- Generate and Persist a Local User ID ---
   useEffect(() => {
     let userId = localStorage.getItem("localUserId");
     if (!userId) {
@@ -41,13 +39,12 @@ function Dashboard({ theme, toggleTheme }) { // Make sure these props are destru
     setLocalUserId(userId);
   }, []);
 
-  // --- Fetch Recent Activities ---
   useEffect(() => {
     const fetchRecentActivities = async () => {
       if (activeTab === "activity" && localUserId) {
         setActivitiesLoading(true);
         try {
-          const res = await axios.get(`http://localhost:5500/api/graph/recent-activities?userId=${localUserId}`);
+          const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/graph/recent-activities?userId=${localUserId}`);
           setRecentActivities(res.data.activities);
           console.log("Recent activities fetched:", res.data.activities);
         } catch (error) {
@@ -102,7 +99,6 @@ function Dashboard({ theme, toggleTheme }) { // Make sure these props are destru
 
   return (
     <div className="dashboard-container">
-      {/* Pass theme and toggleTheme to DashboardNavbar */}
       <DashboardNavbar theme={theme} toggleTheme={toggleTheme} />
 
       <div className="main-layout">

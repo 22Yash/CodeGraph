@@ -1,24 +1,23 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useLocation } from "react-router-dom";
-import GraphHeader from "../../components/GraphHeader"; // Assuming this might need theme props too
+import GraphHeader from "../../components/GraphHeader";
 import GraphTree from "../../components/GraphTree";
 import GraphSidebar from "../../components/GraphSidebar";
 import DashboardNavbar from "../../components/DashboardNavbar";
 
-function GraphView({ theme, toggleTheme }) { // Ensure theme and toggleTheme are received
+function GraphView({ theme, toggleTheme }) {
   const [selectedFile, setSelectedFile] = useState(null);
   const [graphData, setGraphData] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [saveMessage, setSaveMessage] = useState(""); // State for messages (loading/saving/error)
+  const [saveMessage, setSaveMessage] = useState("");
 
   const location = useLocation();
-  const { repoName } = location.state || {}; // e.g., "owner/repo-name"
+  const { repoName } = location.state || {};
 
   const [githubToken, setGithubToken] = useState(null);
-  const [localUserId, setLocalUserId] = useState(null); // State to store the client-generated user ID
+  const [localUserId, setLocalUserId] = useState(null);
 
-  // --- Generate and Persist a Local User ID ---
   useEffect(() => {
     let userId = localStorage.getItem("localUserId");
     if (!userId) {
@@ -31,7 +30,6 @@ function GraphView({ theme, toggleTheme }) { // Ensure theme and toggleTheme are
     setLocalUserId(userId);
   }, []);
 
-  // --- Fetch GitHub Token ---
   useEffect(() => {
     const fetchGithubToken = async () => {
       const jwt = localStorage.getItem("token");
@@ -42,11 +40,11 @@ function GraphView({ theme, toggleTheme }) { // Ensure theme and toggleTheme are
       }
 
       try {
-        const res = await axios.get("http://localhost:5500/api/auth/me/github-token", {
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/auth/me/github-token`, {
           headers: { Authorization: `Bearer ${jwt}` },
         });
         setGithubToken(res.data.githubAccessToken);
-        console.log("✅ GitHub token fetched:", res.data.githubAccessToken);
+        console.log("GitHub token fetched:", res.data.githubAccessToken);
       } catch (err) {
         console.error("Error fetching GitHub token:", err);
       }
@@ -55,7 +53,6 @@ function GraphView({ theme, toggleTheme }) { // Ensure theme and toggleTheme are
     fetchGithubToken();
   }, []);
 
-  // --- Handle Visualization (Generate or Load via Backend) ---
   const handleVisualize = async () => {
     if (!repoName || !githubToken || !localUserId) {
       console.error("Repo name, GitHub token, or localUserId missing");
@@ -66,7 +63,7 @@ function GraphView({ theme, toggleTheme }) { // Ensure theme and toggleTheme are
     setLoading(true);
     setSaveMessage("Requesting graph from backend...");
     try {
-      const res = await axios.post("http://localhost:5500/api/graph", {
+      const res = await axios.post(`${import.meta.env.VITE_API_URL}/api/graph`, {
         repoFullName: repoName,
         githubToken: githubToken,
         userId: localUserId,
@@ -75,7 +72,6 @@ function GraphView({ theme, toggleTheme }) { // Ensure theme and toggleTheme are
       setGraphData(res.data.treeGraph);
       setSaveMessage(res.data.message || "Graph operation successful.");
       console.log("Graph operation successful, received data:", res.data.treeGraph);
-
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.message;
       setSaveMessage(`Visualization error: ${errorMessage}`);
@@ -87,14 +83,12 @@ function GraphView({ theme, toggleTheme }) { // Ensure theme and toggleTheme are
   };
 
   return (
-    // Use CSS variable for background and text color on the main container
     <div className="flex flex-col h-screen font-inter" style={{ backgroundColor: 'var(--graph-primary-bg)', color: 'var(--graph-text-primary)' }}>
       <DashboardNavbar theme={theme} toggleTheme={toggleTheme} />
 
       <div className="p-6 flex-grow overflow-hidden mt-[60px]">
-        {/* Header section with repo name and visualize button */}
         <div className="flex justify-between items-center mb-6 p-4 rounded-lg shadow-sm"
-             style={{ backgroundColor: 'var(--graph-card-bg)', boxShadow: 'var(--graph-shadow-sm)' }}>
+          style={{ backgroundColor: 'var(--graph-card-bg)', boxShadow: 'var(--graph-shadow-sm)' }}>
           <div>
             <h2 className="text-3xl font-extrabold" style={{ color: 'var(--graph-text-primary)' }}>
               {repoName || "No Repository Selected"}
@@ -109,7 +103,6 @@ function GraphView({ theme, toggleTheme }) { // Ensure theme and toggleTheme are
           {repoName && (
             <button
               onClick={handleVisualize}
-              // Use CSS variables for button colors and shadow
               className={`px-6 py-3 rounded-xl font-semibold text-white transition-all duration-300 ease-in-out`}
               style={{
                 backgroundColor: loading || !localUserId ? 'var(--graph-button-disabled-bg)' : 'var(--graph-button-bg)',
@@ -143,13 +136,12 @@ function GraphView({ theme, toggleTheme }) { // Ensure theme and toggleTheme are
 
         {repoName ? (
           <>
-            {/* Input field */}
             <input
               type="text"
               placeholder="Search files in the graph…"
               className="px-4 py-2 rounded-lg w-full mb-6 shadow-sm"
               style={{
-                backgroundColor: 'var(--input-bg)', // Reusing input-bg from Dashboard.css
+                backgroundColor: 'var(--input-bg)',
                 border: '1px solid var(--graph-input-border)',
                 color: 'var(--graph-text-primary)',
                 boxShadow: 'var(--graph-shadow-sm)',
@@ -158,7 +150,7 @@ function GraphView({ theme, toggleTheme }) { // Ensure theme and toggleTheme are
               onFocus={(e) => {
                 e.target.style.borderColor = 'var(--graph-input-focus-border)';
                 e.target.style.boxShadow = `0 0 0 3px var(--graph-input-focus-ring)`;
-                e.target.style.backgroundColor = 'var(--secondary-bg)'; // Match Dashboard's focus behavior
+                e.target.style.backgroundColor = 'var(--secondary-bg)';
               }}
               onBlur={(e) => {
                 e.target.style.borderColor = 'var(--graph-input-border)';
@@ -168,24 +160,23 @@ function GraphView({ theme, toggleTheme }) { // Ensure theme and toggleTheme are
             />
 
             <div className="flex flex-grow h-[calc(100vh-250px)]">
-            <div className="flex-grow rounded-lg p-6 mr-4 overflow-hidden flex items-center justify-center"
-                   style={{ backgroundColor: 'var(--graph-card-bg)', boxShadow: 'var(--graph-shadow-lg)' }}>
-                {graphData ? (
-                  <GraphTree data={graphData} onNodeClick={setSelectedFile} theme={theme} />
-                ) : ( // <--- This is the correct placement for the colon (:)
-                    <p className="text-lg text-center" style={{ color: 'var(--graph-text-secondary)' }}>
-                    {loading ? "Loading graph data..." : "Click 'Visualize / Load Graph' to generate or load the dependency graph."}
-                  </p>
-                )}
-              </div>
+              <div className="flex-grow rounded-lg p-6 mr-4 overflow-hidden flex items-center justify-center"
+                style={{ backgroundColor: 'var(--graph-card-bg)', boxShadow: 'var(--graph-shadow-lg)' }}>
+                {graphData ? (
+                  <GraphTree data={graphData} onNodeClick={setSelectedFile} theme={theme} />
+                ) : (
+                  <p className="text-lg text-center" style={{ color: 'var(--graph-text-secondary)' }}>
+                    {loading ? "Loading graph data..." : "Click 'Visualize / Load Graph' to generate or load the dependency graph."}
+                  </p>
+                )}
+              </div>
               
-
-              <GraphSidebar selectedFile={selectedFile} theme={theme} /> {/* Pass theme to GraphSidebar if needed */}
+              <GraphSidebar selectedFile={selectedFile} theme={theme} />
             </div>
           </>
         ) : (
           <div className="flex items-center justify-center h-[calc(100vh-200px)] rounded-lg"
-               style={{ backgroundColor: 'var(--graph-card-bg)', boxShadow: 'var(--graph-shadow-lg)' }}>
+            style={{ backgroundColor: 'var(--graph-card-bg)', boxShadow: 'var(--graph-shadow-lg)' }}>
             <p className="text-xl font-medium" style={{ color: 'var(--graph-text-secondary)' }}>
               Please go back to the Dashboard and select a repository to visualize its dependencies.
             </p>
