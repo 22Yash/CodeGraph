@@ -1,5 +1,7 @@
 // src/components/GitHubLoginButton.jsx
 import React from "react";
+import { Github, ArrowRight, Code, GitBranch, Users, Zap, Eye, MessageCircle, BarChart3, 
+  Check, Menu, X, Star, Play, Sun, Moon } from 'lucide-react';
 
 const GitHubLoginButton = ({ text = "Continue with GitHub", disabled = false }) => {
   const handleLogin = () => {
@@ -17,8 +19,8 @@ const GitHubLoginButton = ({ text = "Continue with GitHub", disabled = false }) 
       disabled={disabled}
       style={{ backgroundColor: "#155fdc", color: "white" }} // dark GitHub-like theme
     >
-      <img src="https://github.githubassets.com/images/modules/logos_page/GitHub-Mark.png" alt="GitHub" />
-      {text}
+                  <Github className="w-5 h-5 transition-transform duration-300 group-hover:rotate-12" />
+                  {text}
     </button>
   );
 };
