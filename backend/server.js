@@ -18,7 +18,8 @@ const app = express();
 // ✅ Fix CORS
 const allowedOrigins = [
   "https://code-graph-phi.vercel.app",
-  "http://localhost:3000"
+  "http://localhost:3000",
+"https://code-graph-phi.vercel.app/",
 ];
 
 app.use(cors({

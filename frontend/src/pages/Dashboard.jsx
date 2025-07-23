@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom"; // Added useNavigate for clarity
 import {
   Activity,
   Folder,
@@ -14,19 +14,22 @@ import {
   Eye,
 } from "lucide-react";
 
-import "../pages/Dashoard.css";
-import GitHubRepoDropdown from "../components/GithubRepoDropdown";
-import DashboardNavbar from "../components/DashboardNavbar";
-import { useNavigate } from "react-router-dom";
+import "../pages/Dashoard.css"; // Ensure this path is correct
+import GitHubRepoDropdown from "../components/GithubRepoDropdown"; // Ensure this path is correct
+import DashboardNavbar from "../components/DashboardNavbar"; // Ensure this path is correct
 
 function Dashboard({ theme, toggleTheme }) {
   const navigate = useNavigate();
+  const location = useLocation(); // Useful if you need to access state from navigate
   const [activeTab, setActiveTab] = useState("repositories");
   const [selectedRepo, setSelectedRepo] = useState(null);
   const [localUserId, setLocalUserId] = useState(null);
   const [recentActivities, setRecentActivities] = useState([]);
   const [activitiesLoading, setActivitiesLoading] = useState(false);
+  // ✨ NEW: State to hold the user's JWT token
+  const [userToken, setUserToken] = useState(null);
 
+  // Effect to manage localUserId and load the JWT token
   useEffect(() => {
     let userId = localStorage.getItem("localUserId");
     if (!userId) {
@@ -37,8 +40,20 @@ function Dashboard({ theme, toggleTheme }) {
       console.log("Dashboard: Retrieved existing localUserId:", userId);
     }
     setLocalUserId(userId);
-  }, []);
 
+    // ✨ NEW: Retrieve JWT token from localStorage
+    const storedToken = localStorage.getItem("token");
+    if (storedToken) {
+      setUserToken(storedToken);
+      console.log("Dashboard: Retrieved JWT token from localStorage.");
+    } else {
+      console.warn("Dashboard: No JWT token found in localStorage.");
+      // Optional: If no token, redirect to login/home
+      // navigate("/");
+    }
+  }, [navigate]); // Added navigate to dependency array as per ESLint recommendation
+
+  // Effect to fetch recent activities
   useEffect(() => {
     const fetchRecentActivities = async () => {
       if (activeTab === "activity" && localUserId) {
@@ -65,8 +80,8 @@ function Dashboard({ theme, toggleTheme }) {
   };
 
   const handleViewGraph = () => {
-    const token = localStorage.getItem("token");
-    if (selectedRepo && token) {
+    // ✨ Using userToken from state now
+    if (selectedRepo && userToken) {
       navigate("/graphview", {
         state: {
           repoName: selectedRepo.full_name || selectedRepo.name,
@@ -78,8 +93,8 @@ function Dashboard({ theme, toggleTheme }) {
   };
 
   const handleViewGraphFromActivity = (repoFullName) => {
-    const token = localStorage.getItem("token");
-    if (repoFullName && token) {
+    // ✨ Using userToken from state now
+    if (repoFullName && userToken) {
       navigate("/graphview", {
         state: {
           repoName: repoFullName,
@@ -143,12 +158,14 @@ function Dashboard({ theme, toggleTheme }) {
                     <span>Filter</span>
                     <ChevronDown size={16} />
                   </button>
+                  {/* ✨ NEW: Pass userToken from state to GitHubRepoDropdown */}
                   <GitHubRepoDropdown
-                    token={localStorage.getItem("token")}
+                    token={userToken} // <-- Changed to userToken state
                     onSelect={handleSelect}
                     dropdownWidth="w-[250px]"
                     buttonClassName="primary-btn"
                     dropdownClassName="dropdown-menu"
+                    disabled={!userToken} // Disable if no token
                   />
                 </div>
               </div>
@@ -161,6 +178,7 @@ function Dashboard({ theme, toggleTheme }) {
                   <button
                     onClick={handleViewGraph}
                     className="primary-btn"
+                    disabled={!userToken} // Disable if no token
                   >
                     View Dependency Graph
                   </button>
@@ -231,6 +249,7 @@ function Dashboard({ theme, toggleTheme }) {
                           <button
                             onClick={() => handleViewGraphFromActivity(activity.repoFullName)}
                             className="activity-view-btn"
+                            disabled={!userToken} // Disable if no token
                           >
                             <Eye size={16} className="icon" /> View Graph
                           </button>

@@ -5,9 +5,8 @@ const User = require("../models/User");
 
 const { redirectToGitHub, handleGitHubCallback } = require("../controllers/authController");
 
-
-router.get("/github",redirectToGitHub);
-router.get("/github/callback",handleGitHubCallback)
+router.get("/github", redirectToGitHub);
+router.get("/github/callback", handleGitHubCallback);
 
 // Important: GitHub token route
 router.get("/me/github-token", async (req, res) => {
