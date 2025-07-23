@@ -1,5 +1,5 @@
 import React from 'react';
-import { Search, Bell, Settings, Sun, Moon, GitBranch } from 'lucide-react'; // Make sure to import Sun and Moon
+import { Search, Bell, Settings, Sun, Moon,Code ,GitBranch } from 'lucide-react'; // Make sure to import Sun and Moon
 // import userAvatar from '../assets/user.png'; // Assuming you have a default user avatar image
 
 const DashboardNavbar = ({ theme, toggleTheme }) => {
@@ -7,9 +7,11 @@ const DashboardNavbar = ({ theme, toggleTheme }) => {
     <header className="header">
       <div className="header-content">
         <div className="logo-section">
-          <div className="logo">
-            <GitBranch /> {/* Using GitBranch for logo as per previous context */}
-            <span>DependencyFlow</span>
+        <div className="flex items-center space-x-2">
+            <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center transform transition-all duration-300 hover:scale-110 hover:rotate-12">
+              <Code className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold transition-colors duration-300 hover:text-blue-500">CodeGraph</span>
           </div>
           <div className="search-container">
             <Search className="search-icon" />
