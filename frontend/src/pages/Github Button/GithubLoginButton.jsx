@@ -8,7 +8,7 @@ const GitHubLoginButton = ({ text = "Continue with GitHub", disabled = false }) 
     if (!disabled) {
       // Use the VITE_API_URL environment variable here
       // Vite apps use import.meta.env for environment variables
-      window.location.href = `https://codegraph-backend.onrender.com/api/auth/github`; 
+      window.location.href = `https://codegraph.onrender.com/api/auth/github`; 
     }
   };
 
