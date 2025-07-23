@@ -6,9 +6,9 @@ const connectDB = require("./config/db");
 
 // Temporarily comment out route imports
 const authRoutes = require("./routes/auth");
-// const repoRoutes = require("./routes/selectRepo");
-// const graphRoute = require("./routes/scan");
-// const graphRoutes = require("./routes/graphRoutes");
+const repoRoutes = require("./routes/selectRepo");
+const graphRoute = require("./routes/scan");
+const graphRoutes = require("./routes/graphRoutes");
 
 // Connect MongoDB
 connectDB();
@@ -40,9 +40,9 @@ app.use(express.json());
 
 // Temporarily comment out all route usages
 app.use("/api/auth", authRoutes);
-// app.use("/api/github", repoRoutes);
-// app.use("/api/scan", graphRoute);
-// app.use("/api/graph", graphRoutes);
+app.use("/api/github", repoRoutes);
+app.use("/api/scan", graphRoute);
+app.use("/api/graph", graphRoutes);
 
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
