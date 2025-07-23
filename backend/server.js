@@ -5,7 +5,7 @@ const cookieParser = require('cookie-parser');
 const connectDB = require("./config/db");
 
 // Temporarily comment out route imports
-// const authRoutes = require("./routes/auth");
+const authRoutes = require("./routes/auth");
 // const repoRoutes = require("./routes/selectRepo");
 // const graphRoute = require("./routes/scan");
 // const graphRoutes = require("./routes/graphRoutes");
@@ -38,7 +38,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 // Temporarily comment out all route usages
-// app.use("/api/auth", authRoutes);
+app.use("/api/auth", authRoutes);
 // app.use("/api/github", repoRoutes);
 // app.use("/api/scan", graphRoute);
 // app.use("/api/graph", graphRoutes);
