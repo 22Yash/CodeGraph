@@ -1,6 +1,6 @@
 const axios = require("axios");
 const jwt = require("jsonwebtoken");
-const User = require("../models/User");
+const User = require("../modles/User");
 
 const redirectToGitHub = (req, res) => {
   const githubAuthURL = `https://github.com/login/oauth/authorize?client_id=${process.env.GITHUB_CLIENT_ID}&redirect_uri=${process.env.GITHUB_REDIRECT_URI}&scope=read:user,user:email,repo`;
@@ -31,22 +31,19 @@ const handleGitHubCallback = async (req, res) => {
 
     const accessToken = tokenResponse.data.access_token;
 
-    // Step 2: Fetch user profile from GitHub
+    // Step 2: Fetch user profile
     const userResponse = await axios.get(`https://api.github.com/user`, {
       headers: { Authorization: `Bearer ${accessToken}` },
     });
 
     const { id, login, avatar_url, email, name } = userResponse.data;
 
-    // Step 3: Check if user exists in DB
+    // Optional: Save user to DB (you can add your own logic here)
     let user = await User.findOne({ githubId: id });
-    let isNewUser = false;
 
     if (!user) {
-      // New user – create in DB
-      isNewUser = true;
       user = new User({
-        githubId: id,
+        githubId: id, // ✅ Required field from your schema
         username: login,
         avatar: avatar_url,
         email,
@@ -54,26 +51,24 @@ const handleGitHubCallback = async (req, res) => {
         accessToken,
       });
     } else {
-      // Existing user – update access token
       user.accessToken = accessToken;
     }
 
     await user.save();
 
-    // Step 4: Create JWT
+    // Step 3: Create JWT
     const token = jwt.sign(
       {
         userId: user._id,
-        githubUsername: user.username,
+        githubUsername: user.username, // Add this!
       },
       process.env.JWT_SECRET,
       { expiresIn: '7d' }
     );
 
-    // Step 5: Redirect based on user status
-    const redirectPath = isNewUser ? 'welcome' : 'dashboard';
-    const redirectUrl = `${process.env.FRONTEND_URL}/${redirectPath}?token=${token}`;
     
+    // Step 4: Redirect to frontend
+    const redirectUrl = `${process.env.FRONTEND_URL}/welcome?token=${token}`;
     res.redirect(redirectUrl);
   } catch (err) {
     console.error("GitHub OAuth Error:", err);
